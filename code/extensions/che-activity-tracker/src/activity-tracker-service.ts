@@ -8,6 +8,12 @@
  * SPDX-License-Identifier: EPL-2.0
  ***********************************************************************/
 
+// Services that the ActivityTrackerService requires
+export interface ActivityTrackerServices {
+	workspaceService: { updateWorkspaceActivity: () => any };
+	telemetryService: { submitTelemetryActivity: () => any };
+}
+
 /**
  * Receives activity updates and sends reset inactivity requests to the che-machine-exec /activity/tick endpoint.
  * To avoid duplicate requests may send requests periodically. This means
@@ -27,12 +33,12 @@ export class ActivityTrackerService {
 	// Flag which is used to check if new requests were received during timer awaiting.
 	private isNewRequest: boolean;
 
-	private workspaceService: any;
+	private services: ActivityTrackerServices;
 
-	constructor(workspaceService: any) {
+	constructor(services: ActivityTrackerServices) {
 		this.isTimerRunning = false;
 		this.isNewRequest = false;
-		this.workspaceService = workspaceService;
+		this.services = services;
 	}
 
 	/**
@@ -68,8 +74,9 @@ export class ActivityTrackerService {
 	private sendRequest(
 		attemptsLeft: number = ActivityTrackerService.RETRY_COUNT,
 	): void {
+		this.services.telemetryService.submitTelemetryActivity();
 		try {
-			this.workspaceService.updateWorkspaceActivity();
+			this.services.workspaceService.updateWorkspaceActivity();
 		} catch (error) {
 			if (attemptsLeft > 0) {
 			  setTimeout(this.sendRequest, ActivityTrackerService.RETRY_REQUEST_PERIOD_MS, --attemptsLeft);
