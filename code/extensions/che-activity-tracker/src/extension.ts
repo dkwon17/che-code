@@ -9,10 +9,9 @@
  ***********************************************************************/
 
 import * as vscode from "vscode";
-import { ActivityTrackerService, ActivityTrackerServices } from "./activity-tracker-service";
+import { ActivityTrackerService, WorkspaceService } from "./activity-tracker-service";
 
 export async function activate(context: vscode.ExtensionContext) {
-
 	const eventsToTrack = [
 		vscode.workspace.onDidChangeTextDocument,
 		vscode.window.onDidChangeActiveTextEditor,
@@ -27,8 +26,8 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 async function track(events: vscode.Event<any>[], context: vscode.ExtensionContext) {
-	const services = await getServices();
-	const activityTracker = new ActivityTrackerService(services);
+	const workspaceService = await getWorkspaceService();
+	const activityTracker = new ActivityTrackerService(workspaceService);
 	events.forEach((e: vscode.Event<any>) => {
 		context.subscriptions.push(
 			e(async () => {
@@ -38,7 +37,7 @@ async function track(events: vscode.Event<any>[], context: vscode.ExtensionConte
 	});
 }
 
-async function getServices(): Promise<ActivityTrackerServices> {
+async function getWorkspaceService(): Promise<WorkspaceService> {
 	const CHE_API = 'eclipse-che.api';
 	const extensionApi = vscode.extensions.getExtension(CHE_API);
 	if (!extensionApi) {
@@ -48,10 +47,7 @@ async function getServices(): Promise<ActivityTrackerServices> {
 	try {
 		await extensionApi.activate();
 		const cheApi: any = extensionApi?.exports;
-		return {
-			workspaceService: cheApi.getWorkspaceService(),
-			telemetryService: cheApi.getTelemetryService(),
-		};
+		return cheApi.getWorkspaceService();
 	} catch {
 		throw Error(`Failed to get workspace service. Could not activate and retrieve exports from extension ${CHE_API}.`);
 	}

@@ -1,13 +1,14 @@
 {
-  "name": "che-activity-tracker",
-  "displayName": "che-activity-tracker",
-  "description": "",
+  "name": "telemetry",
+  "displayName": "%displayName%",
+  "description": "%description%",
   "publisher": "eclipse-che",
   "license": "EPL-2.0",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.63.0"
   },
+  "icon": "images/icon.png",
   "categories": [
     "Other"
   ],
@@ -22,8 +23,8 @@
   },
   "main": "./out/extension.js",
   "scripts": {
-    "compile": "gulp compile-extension:che-activity-tracker",
-    "watch": "gulp watch-extension:che-activity-tracker",
+    "compile": "gulp compile-extension:che-telemetry",
+    "watch": "gulp watch-extension:che-telemetry",
     "vscode:prepublish": "npm run compile",
     "test": "jest",
     "lint:fix": "eslint --fix --cache=true --no-error-on-unmatched-pattern=true \"{src,tests}/**/*.{ts,tsx}\""
