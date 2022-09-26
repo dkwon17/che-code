@@ -31,6 +31,7 @@ module.exports = withDefaults({
 	externals: {
 		'bufferutil': 'commonjs bufferutil', // ignored
 		'utf-8-validate': 'commonjs utf-8-validate', // ignored
+		'express': 'commonjs express'
 	},
 
 });

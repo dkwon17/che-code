@@ -9,6 +9,8 @@
  ***********************************************************************/
 import * as vscode from "vscode";
 import { TelemetryEventService } from "./telemetry-event-service";
+import * as axios from 'axios';
+const express = require('express');
 
 let telemetryEventService: TelemetryEventService;
 
@@ -26,6 +28,8 @@ export async function activate(context: vscode.ExtensionContext) {
             }
         })
     );
+
+    startServer();
 }
 
 async function getTelemetryService(): Promise<any> {
@@ -42,6 +46,28 @@ async function getTelemetryService(): Promise<any> {
     } catch {
         throw Error(`Failed to get telemetry service. Could not activate and retrieve exports from extension ${CHE_API}.`);
     }
+}
+
+async function startServer() {
+    const app = express()
+    const port = 2999
+
+    app.get('/', (req: any, res: any) => {
+        res.json({
+            ip: req.get('x-forwarded-for') !== undefined ? req.get('x-forwarded-for') : req.connection.remoteAddress,
+            port: req.get('x-forwarded-port') !== undefined ? req.get('x-forwarded-port') : req.connection.remotePort,
+        });
+    })
+
+    app.listen(port, () => {
+        console.log(`Example app listening on port ${port}!`)
+    })
+
+    await new Promise(resolve => setTimeout(resolve, 7000));
+    console.log('RESULT!');
+    const result = await axios.default.get<any>('http://localhost:2999');
+    console.log('HERE IS THE RESULT!');
+    console.log(JSON.stringify(result.data, null, 2));
 }
 
 export function deactivate() { }
