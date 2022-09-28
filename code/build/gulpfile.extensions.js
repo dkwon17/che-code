@@ -39,6 +39,7 @@ const compilations = [
 	'che-resource-monitor/tsconfig.json',
 	'che-telemetry/tsconfig.json',
 	'che-github-authentication/tsconfig.json',
+	'che-ip-service/tsconfig.json',
 	'configuration-editing/build/tsconfig.json',
 	'configuration-editing/tsconfig.json',
 	'css-language-features/client/tsconfig.json',
