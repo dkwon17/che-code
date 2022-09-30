@@ -40,8 +40,8 @@
         "yarn": "^1.22.18"
     },
     "dependencies": {
-        "axios": "0.21.2",
-        "inversify": "^6.0.1"
+        "inversify": "^6.0.1",
+        "express": "^4.18.1"
     },
     "repository": {
         "type": "git",

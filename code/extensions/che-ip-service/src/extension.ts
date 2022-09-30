@@ -1,33 +1,15 @@
-/**********************************************************************
- * Copyright (c) 2022 Red Hat, Inc.
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- ***********************************************************************/
+// The module 'vscode' contains the VS Code extensibility API
+// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-const express = require('express');
+import * as axios from 'axios';
 
+// this method is called when your extension is activated
+// your extension is activated the very first time the command is executed
 export async function activate(_: vscode.ExtensionContext) {
-    startServer();
+    const result = await axios.default.get<any>('https://che-dogfooding.apps.che-dev.x6e0.p1.openshiftapps.com/workspace288b5c029f6d4f95/dev/2999');
+    console.log('HERE IS THE RESULT!');
+    console.log(JSON.stringify(result.data, null, 2));
 }
 
-async function startServer() {
-    const app = express()
-    const port = 2999
-
-    app.get('/', (req: any, res: any) => {
-        res.json({
-            ip: req.get('x-forwarded-for') !== undefined ? req.get('x-forwarded-for') : req.connection.remoteAddress,
-            port: req.get('x-forwarded-port') !== undefined ? req.get('x-forwarded-port') : req.connection.remotePort,
-        });
-    })
-
-    app.listen(port, () => {
-        console.log(`Example app listening on port ${port}!`)
-    })
-}
-
+// this method is called when your extension is deactivated
 export function deactivate() {}
